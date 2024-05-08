@@ -1,117 +1,122 @@
-import axios from 'axios';
-import './App.css';
-import { useState } from "react";
-import React, { useEffect } from "react";
-import reportWebVitals from './reportWebVitals';
-import Card from "react-bootstrap/Card";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
+import React, { useState } from 'react'
+import {Navbar, Nav, Button} from 'react-bootstrap';
+import Form from 'react-bootstrap/Form';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import Container from 'react-bootstrap/Container';
+import Accordion from 'react-bootstrap/Accordion';
 
 function App() {
-  const [inputValue, setInputValue] = useState('s');
+    const [country, setCountry] = useState('')
+    const [data, setData] = useState([])
+    const [error, setError] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-  const handleInputChange = (event) => {
-    console.log(inputValue);
-
-    setInputValue(event.target.value);
-
-  };
-
-  const fetchUniversities = (event) => {
-    console.log(inputValue);
-
-    //setInputValue(event.target.value);
-
-  };
-//  function fetchUniversities () {
-//     //console.log(this.state.inputValue);
-  
-//      // CustomReactQuery(inputValue)
     
-//   };
 
-  let onInputChange = (event, value) => {
-    console.log('event: ', event);
-    // event is the onCLickEvent, value is '0'
-  }
+    const handleClick = async () => {
+        try {
+            setLoading(true);
+            setData(null)
+            if(country==''){
+            setLoading(false);
+            setError(true);
+                return;
+            }
+            setError(false);
+            const data = await (await fetch(`http://universities.hipolabs.com/search?country=${country}`)).json()
+            setLoading(false);
+            setData(data);
 
-const [universities,error,loading]= CustomReactQuery(inputValue);
+        } catch (err) {
+            console.log(err.message)
+            setLoading(false);
 
- if(loading){
-  return <h1>Loading...</h1>
-   }
-   if(error){
-     return <h1>Error</h1>
-      }
+        }
+    }
 
-  return (
+    function checkResponse(data) {
+        if (data) {
+            console.log(data)
+            
+        } else {
+            return null;
+        }
 
-<div className="row mt-4">
-          <div className="col-sm-4">
-            <h4 className="mb-2">
-              <u>GET: List Of universities By Country</u>
-            </h4>
-            <input
-              type="text"
-              placeholder="Enter Country"
-              className="form-control mt-3"
-              id="country"
-              style={{ width: "300px" }}
-              value={inputValue} 
-              onChange={handleInputChange} 
-            />
-            <button
-              onClick={() => this.fetchUniversities(this)}
+    }
+
+    return (
+
+        <Container>
+             <Row>
+             <Col>
+             <Form>
+            
+            <Form.Group>
+          
+              <Form.Label>Country Name</Form.Label>
+          
+           
+              <Form.Control size="lg" required="required" placeholder='Enter Country' value={country} onChange={e => setCountry(e.target.value)} />
+              
+      
+          
+              <a>
+               Number Of Universities : {data && data.length}
+              </a>
              
-            >
-              Fetch
-            </button>
+      
+            </Form.Group>
+      </Form>
+      </Col>
+      <Col className="d-flex align-items-center justify-content-center"> 
+       <Button style={{ marginRight: "auto" }} type="submit" onClick={handleClick} as="a" variant="primary">Search</Button></Col>
+      </Row>
 
-            <a>
-         Number Of Universities : {universities.length}
-        </a>
+      <Row>
+      <div>
+        
+            {checkResponse(data)}
 
-          </div>
+            <div class="text-right">
+            {loading && <h5 style={{ color: 'green' }}>Loading...</h5>}
+            {error && <h5 style={{ color: 'red' }}>Please input some value for country</h5>}
+</div>
+        {data && data.map((university) => (
 
         
-          </div>
+
+         
+            <Accordion>
+        <Accordion.Item eventKey="0">
+          <Accordion.Header>{university.name}</Accordion.Header>
+          <Accordion.Body>
+          {university['name']}
+
+          {university['state-province']}
+          {university.country}
+          {/* {university.domains && university.domains.map(university =>{ }} */}
+
+          </Accordion.Body>
+        </Accordion.Item>
+        
+      </Accordion>
+            
+       
+        ))}
+
+
+
+    
+      
+        </div>
+      </Row>
+    </Container>
+
+
   
+    )
 
-
-   
-  );
 }
 
-export default App
-
-const CustomReactQuery=(country)=>{
-  const [universities, setUniversities] = useState([]);
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
- 
-  
-  React.useEffect(() => { 
- 
-    ;(async()=>{
-
-
-     try {
-       setError(false);
-        const response= await axios.get('http://universities.hipolabs.com/search?country=');
-         setLoading(true);
-         //console.log(response.data);
-         setUniversities(response.data);
-         setLoading(false);
-     
-     } catch (error) {
-      console.log(error)
-      setError(true);
-     }
-
-    })()
-
- 
- }, []);
-
-    return [universities,error,loading];
-}
+export default App;
