@@ -4,9 +4,11 @@ import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
-import Accordion from 'react-bootstrap/Accordion';
+import { Accordion, Card, useAccordionToggle } from "react-bootstrap";
+import '@coreui/coreui/dist/css/coreui.min.css'
 
 function App() {
+    
     const [country, setCountry] = useState('')
     const [data, setData] = useState([])
     const [error, setError] = useState(false);
@@ -54,17 +56,17 @@ function App() {
             
             <Form.Group>
           
-              <Form.Label>Country Name</Form.Label>
+              <Form.Label><b>Search By Country Name</b></Form.Label>
           
            
-              <Form.Control size="lg" required="required" placeholder='Enter Country' value={country} onChange={e => setCountry(e.target.value)} />
+              <Form.Control size="lg" required="required" placeholder='Country Name Here' value={country} onChange={e => setCountry(e.target.value)} />
               
       
           
-              <a>
+              <b>
                Number Of Universities : {data && data.length}
-              </a>
-             
+              </b>
+            
       
             </Form.Group>
       </Form>
@@ -78,7 +80,7 @@ function App() {
         
             {checkResponse(data)}
 
-            <div class="text-right">
+            <div class="text-center">
             {loading && <h5 style={{ color: 'green' }}>Loading...</h5>}
             {error && <h5 style={{ color: 'red' }}>Please input some value for country</h5>}
 </div>
@@ -87,32 +89,44 @@ function App() {
         
 
          
-            <Accordion>
+            <Accordion className="accordion" id="accordionExample">
         <Accordion.Item eventKey="0">
           <Accordion.Header>{university.name}</Accordion.Header>
           <Accordion.Body>
-          {university['name']}
+        <div><b>University Name : </b> {university['name']}</div>
+        <div><b>State/Province : </b>{university['state-province']}</div>
+        <div> <b>Country : </b>    {university.country}</div>
+    
+        <div>
+        <b>Web Pages : </b> 
+{university["web_pages"] && university["web_pages"].map(function(d, idx){
+   return (<a key={idx} href={d} rel="noopener noreferrer" target="_blank">{d}</a>)
+ })}
 
-          {university['state-province']}
-          {university.country}
-          {/* {university.domains && university.domains.map(university =>{ }} */}
+</div>
+          
+        <div>
+        <b>Domains : </b> 
+      {university.domains && university.domains.map(function(d, idx){
+         return (<li key={idx}>{d}</li>)
+       })}
+
+      </div>
+
+         
 
           </Accordion.Body>
         </Accordion.Item>
         
       </Accordion>
             
-       
         ))}
 
-
-
-    
-      
         </div>
       </Row>
+      
     </Container>
-
+        
 
   
     )
