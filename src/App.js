@@ -14,8 +14,6 @@ function App() {
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    
-
     const handleClick = async () => {
         try {
             setLoading(true);
@@ -53,21 +51,13 @@ function App() {
              <Row>
              <Col>
              <Form>
-            
             <Form.Group>
-          
               <Form.Label><b>Search By Country Name</b></Form.Label>
-          
-           
               <Form.Control size="lg" required="required" placeholder='Country Name Here' value={country} onChange={e => setCountry(e.target.value)} />
-              
-      
-          
               <b>
                Number Of Universities : {data && data.length}
               </b>
-            
-      
+              {(data!=null && data.length==0)? <h5 style={{ color: 'red' }}>Enter Valid Country/No Universities Found</h5>:""}
             </Form.Group>
       </Form>
       </Col>
@@ -77,7 +67,6 @@ function App() {
 
       <Row>
       <div>
-        
             {checkResponse(data)}
 
             <div class="text-center">
@@ -85,10 +74,6 @@ function App() {
             {error && <h5 style={{ color: 'red' }}>Please input some value for country</h5>}
 </div>
         {data && data.map((university) => (
-
-        
-
-         
             <Accordion className="accordion" id="accordionExample">
         <Accordion.Item eventKey="0">
           <Accordion.Header>{university.name}</Accordion.Header>
@@ -104,7 +89,6 @@ function App() {
  })}
 
 </div>
-          
         <div>
         <b>Domains : </b> 
       {university.domains && university.domains.map(function(d, idx){
@@ -112,19 +96,14 @@ function App() {
        })}
 
       </div>
-
-         
-
           </Accordion.Body>
         </Accordion.Item>
-        
       </Accordion>
             
         ))}
 
         </div>
       </Row>
-      
     </Container>
         
 
